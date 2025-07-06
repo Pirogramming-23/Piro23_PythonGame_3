@@ -103,9 +103,37 @@ def show_game_list():
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ''')
 
+# ============ 6. 게임 선택 및 실행 ============ #
+def select_and_play_game():
+    while True:
+        choice = input("플레이할 게임 번호를 입력하세요 (1~5): ").strip()
+        if choice == '1':
+            # 1번 게임 코드 작성: 사망의 총알 게임
+            print("사망의 총알 게임 시작! (여기에 게임 코드 작성)")
+            break
+        elif choice == '2':
+            # 2번 게임 코드 작성: 쪼야 게임
+            print("쪼야 게임 시작! (여기에 게임 코드 작성)")
+            break
+        elif choice == '3':
+            # 3번 게임 코드 작성: 369 게임
+            print("369 게임 시작! (여기에 게임 코드 작성)")
+            break
+        elif choice == '4':
+            # 4번 게임 코드 작성: 두부 게임
+            print("두부 게임 시작! (여기에 게임 코드 작성)")
+            break
+        elif choice == '5':
+            # 5번 게임 코드 작성: 초성 게임
+            print("초성 게임 시작! (여기에 게임 코드 작성)")
+            break
+        else:
+            print("⚠️ 1부터 5 사이의 숫자를 입력해주세요.")
+
 # ============ 전체 실행 흐름 ============ #
 print_game_title()
 if ask_to_start():
     choose_drink_level()
     invite_friends()
     show_game_list()
+    select_and_play_game()
