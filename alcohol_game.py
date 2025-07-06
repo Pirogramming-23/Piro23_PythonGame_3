@@ -183,6 +183,14 @@ def main_game_loop():
         else:
             print("\n🎮 게임이 종료되었습니다. 다음 플레이어로 넘어갑니다...\n")
 
+        # 첫 턴이 아닐 때만 계속 여부 묻기
+        if not first_turn:
+            print("\n그만하고 싶으면 'exit', 계속하려면 아무 키나 누르세요!")
+            cont = input("계속 진행할까요? : ").strip().lower()
+            if cont == 'exit':
+                print("🍺 다음에 또 만나요~ 👋")
+                exit()  # 전체 프로그램 종료
+
         for p in player_status:
             player_status[p]['alive'] = True
 
@@ -192,14 +200,6 @@ def main_game_loop():
 
 def select_game(player, first_turn=False):
     if player == name:
-
-        # 첫 턴이 아닐 때만 계속 여부 묻기
-        if not first_turn:
-            print("\n그만하고 싶으면 'exit', 계속하려면 아무 키나 누르세요!")
-            cont = input("계속 진행할까요? : ").strip().lower()
-            if cont == 'exit':
-                print("🍺 다음에 또 만나요~ 👋")
-                exit()  # 전체 프로그램 종료
 
         while True:
             choice = input("플레이할 게임 번호를 입력하세요 (1~5): ").strip()
