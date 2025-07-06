@@ -219,8 +219,10 @@ def play_game(game_number, current_player):
         directions = ['왼쪽', '오른쪽', '앞', '뒤']
         players = [p for p in player_status if player_status[p]['alive']]
         random.shuffle(players)
+        players.insert(0, name)
         turn = 0
 
+        is_first_turn = True
         while True:
             current_player = players[turn % len(players)]
             expected = random.choice(directions)
@@ -228,12 +230,14 @@ def play_game(game_number, current_player):
             print(f"\n🎯 {current_player} 차례입니다!")
             print("사랑의 총알~💘")
 
-            if current_player == name:
-                answer = input("👉 방향을 외쳐주세요! (왼쪽/오른쪽/앞/뒤): ").strip()
+            if is_first_turn:
+                answer = input(f"👉 {current_player}!! 방향을 외쳐주세요! (왼쪽/오른쪽/앞/뒤): ").strip()
+                is_first_turn = False
             else:
                 fail = random.random() < 0.15
                 answer = expected if not fail else random.choice(directions)
                 print(f"🤖 {current_player}: {answer}")
+
 
             if answer != expected:
                 print(f"❌ 틀렸습니다! 정답은 '{expected}'! 벌주~ 🍺")
@@ -243,6 +247,36 @@ def play_game(game_number, current_player):
             else:
                 print("✅ 통과!")
                 turn += 1
+
+    elif game_number == 2:
+        print("\n😊 좋아~ 좋아~ 좋아~ 게임 시작! 😊")
+        players = [p for p in player_status if player_status[p]['alive']]
+        random.shuffle(players)
+        turn = 0
+
+        while True:
+            current_player = players[turn % len(players)]
+            print(f"\n🎯 {current_player} 차례입니다!")
+
+            if current_player == name:
+                user_input = input("👉 '좋아'를 외치세요! : ").strip()
+                if user_input != "좋아":
+                    print("❌ 틀렸습니다! '좋아'라고 외쳐야 해요! 벌주~ 🍺")
+                    mock_loser(current_player)
+                    drink(current_player)
+                    return True
+            else:
+                fail = random.random() < 0.15
+                said = "좋아" if not fail else random.choice(["조아", "아니야", "", "굿"])
+                print(f"🤖 {current_player}: {said}")
+                if said != "좋아":
+                    print("❌ 틀렸습니다! 벌주~ 🍺")
+                    mock_loser(current_player)
+                    drink(current_player)
+                    return True
+
+            print("✅ 통과!")
+            turn += 1
 
 
     elif game_number == 3:
