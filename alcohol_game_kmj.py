@@ -18,7 +18,6 @@ def mock_loser(name):
         f"👻 {name}, 이제 유령으로 관전하시겠어요? 히히히~"
     ]
     print(random.choice(messages))
-    
 
 # ============ 1. 게임 타이틀 ============ #
 def print_game_title():
