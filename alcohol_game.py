@@ -1,4 +1,23 @@
 import random
+friends = []
+name = ""
+
+def mock_loser(name):
+    messages = [
+        f"🤣 {name}, 그걸 틀려? 초딩도 맞추겠다~ 🍶",
+        f"💀 {name}, 아니 대체 어디서 '짝'을 놓친 거야? 뇌세포 알코올에 다 녹았나~?",
+        f"🐢 {name}, 속도도 느린데 정답도 느려~",
+        f"📉 {name}의 지능 지수 급강하! 지금은 바닥을 뚫는 중... 🕳️",
+        f"🫠 {name}, 망신살이 전국구야~",
+        f"👋 {name}님 탈락입니다~ 보내드릴게요~ 버스 여기요~ 🚌💨",
+        f"🤡 {name}, 진심으로 박수... 짝짝짝 대신... '짤'~ 🫴",
+        f"🙄 {name}, 아 그건 너무했다 진짜ㅋㅋㅋ 실화냐?ㅋㅋ",
+        f"🫳 {name}, 게임은 실력으로~ 술은 책임지고~ 잔 드세요~ 🍷",
+        f"👻 {name}, 이제 유령으로 관전하시겠어요? 히히히~"
+    ]
+    print(random.choice(messages))
+    
+
 
 # ============ 1. 게임 타이틀 ============ #
 def print_game_title():
@@ -25,6 +44,8 @@ def print_game_title():
 
 # ============ 2. 게임 시작 여부 + 이름 ============ #
 def ask_to_start():
+    
+    global name
     answer = input("게임을 진행할까요? (y/n) : ").strip().lower()
 
     if answer == 'y':
@@ -62,6 +83,9 @@ def choose_drink_level():
 
 # ============ 4. 친구 초대 + 상태 요약 ============ #
 def invite_friends():
+    
+    global friends
+    
     characters = {
         "은서": 2,
         "하연": 6,
@@ -90,6 +114,8 @@ def invite_friends():
     print("\n현재 상태 요약 🔻")
     for name, limit in selected:
         print(f"{name}은(는) 지금까지 ⚠️ 마신 잔 수: 0 / 치사량까지: {limit}잔")
+        
+    friends = random.sample(list(characters.items()), num) 
 
 # ============ 5. 게임 리스트 출력 ============ #
 def show_game_list():
@@ -116,9 +142,52 @@ def select_and_play_game():
             print("쪼야 게임 시작! (여기에 게임 코드 작성)")
             break
         elif choice == '3':
-            # 3번 게임 코드 작성: 369 게임
-            print("369 게임 시작! (여기에 게임 코드 작성)")
-            break
+            
+                print("369 게임 시작!")   
+                print("\n삼 육구~ 3 6 9~! 삼 육구~ 3 6 9~!\n")
+                print("🎉 369 게임을 시작합니다! 숫자에 3,6,9가 들어가면 '짝'이라고 말하세요.\n")
+
+                players = [name] + [friend_name for friend_name, _ in friends]
+                player_status = {p: True for p in players}
+
+                current_number = 1
+                current_index = 0
+
+                while True:
+                    
+                    alive = [p for p in players if player_status[p]] ### 생존자 
+                    if len(alive) == 1:
+                        print(f"\n🎉 {alive[0]}님이 마지막까지 살아남았습니다! 🏆") ###생존자 한 명이면 게임 끝내기
+                        break
+
+                    current_player = alive[current_index % len(alive)]
+                    clap = sum(1 for digit in str(current_number) if digit in '369') ## 3,6,9 개수에 따라 박수 치기
+                    correct = "짝" * clap if clap > 0 else str(current_number) ## 정답 생성
+
+                    if current_player == name:
+                        user_input = input(f"👉 {name}!! 너 차례!! ").strip()
+                        if user_input != correct:
+                            print(f"❌🤪❌🤪❌🤪❌🤪  오답! 정답은 '{correct}'이지!!!!. 탈락!❌🤪❌🤪❌🤪❌🤪 ")
+                            mock_loser(current_player)
+                            player_status[name] = False
+                            break
+                    else:
+                        fail_chance = 0.05
+                        fail = random.random() < fail_chance
+                        said = correct if not fail else ("짝" if correct != "짝" else str(current_number))
+                        print(f"🤖 {current_player}: {said}")
+                        if said != correct:
+                            print(f"❌🤪❌🤪❌🤪❌🤪  오답! 정답은 '{correct}'이지!!!!. 탈락!❌🤪❌🤪❌🤪❌🤪 ")
+                            mock_loser(current_player)
+                            player_status[name] = False
+                            player_status[current_player] = False
+                            break
+
+                    current_index += 1
+                    current_number += 1
+                                            
+                break
+               
         elif choice == '4':
             # 4번 게임 코드 작성: 두부 게임
             print("두부 게임 시작! (여기에 게임 코드 작성)")
@@ -129,6 +198,8 @@ def select_and_play_game():
             break
         else:
             print("⚠️ 1부터 5 사이의 숫자를 입력해주세요.")
+
+
 
 # ============ 전체 실행 흐름 ============ #
 print_game_title()
