@@ -122,11 +122,11 @@ def invite_friends():
 def show_game_list():
     print(r'''
 ┏━━━━━━━━━━━ 오늘의 Alcohol GAME 🍺 ━━━━━━━━━━━┓
-  1. 사망의 총알 게임
-  2. 쪼야 게임
+  1. 사랑의 총알 게임
+  2. 좋아 게임
   3. 369 게임
   4. 두부 게임
-  5. 초성 게임
+  5. 시장에 가면 게임
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ''')
 
@@ -141,7 +141,10 @@ def print_nice_game_banner():
 ''')
 
 def main_game_loop():
-    print_nice_game_banner() 
+    print_nice_game_banner()
+
+    show_game_list()
+
     players = [name] + [friend_name for friend_name, _ in friends]
     friend_limits = dict(friends)
 
@@ -156,6 +159,7 @@ def main_game_loop():
         }
 
     turn_index = 0
+    first_turn = True  # 첫 번째 턴 여부 플래그
 
     while True:
         alive_players = [p for p in players if player_status[p]['alive']]
@@ -165,29 +169,38 @@ def main_game_loop():
 
         current_player = alive_players[turn_index % len(alive_players)]
 
-        print_game_status()
+        if not first_turn:
+            print_game_status()
 
-        if current_player == name:
-            print("\n그만하고 싶으면 'exit', 계속하려면 아무 키나 누르세요!")
-            cont = input("계속 진행할까요? : ").strip().lower()
-            if cont == 'exit':
-                print("🍺 다음에 또 만나요~ 👋")
-                break
+        game_number = select_game(current_player, first_turn=first_turn)
+        
 
-        game_number = select_game(current_player)
         print(f"\n🎮 {current_player}님이 {game_number}번 게임을 선택했습니다!\n")
 
-        died = play_game(game_number, current_player)  
+        died = play_game(game_number, current_player)
         if died:
             print(f"\n💀 누군가 사망하여 해당 게임은 종료됩니다. 다음 플레이어로 넘어갑니다.\n")
         else:
             print("\n🎮 게임이 종료되었습니다. 다음 플레이어로 넘어갑니다...\n")
 
-        turn_index += 1
+        for p in player_status:
+            player_status[p]['alive'] = True
 
-def select_game(player):
+        turn_index += 1
+        first_turn = False  # 첫 턴 끝났다고 표시
+
+
+def select_game(player, first_turn=False):
     if player == name:
-        show_game_list()
+
+        # 첫 턴이 아닐 때만 계속 여부 묻기
+        if not first_turn:
+            print("\n그만하고 싶으면 'exit', 계속하려면 아무 키나 누르세요!")
+            cont = input("계속 진행할까요? : ").strip().lower()
+            if cont == 'exit':
+                print("🍺 다음에 또 만나요~ 👋")
+                exit()  # 전체 프로그램 종료
+
         while True:
             choice = input("플레이할 게임 번호를 입력하세요 (1~5): ").strip()
             if choice in ['1', '2', '3', '4', '5']:
@@ -197,85 +210,12 @@ def select_game(player):
     else:
         return random.randint(1, 5)
 
-# ============ 6. 게임 선택 및 실행 ============ #
-def select_and_play_game():
-    while True:
-        choice = input("플레이할 게임 번호를 입력하세요 (1~5): ").strip()
-        if choice == '1':
-            # 1번 게임 코드 작성: 사망의 총알 게임
-            print("사망의 총알 게임 시작! (여기에 게임 코드 작성)")
-            break
-        elif choice == '2':
-            # 2번 게임 코드 작성: 쪼야 게임
-            print("쪼야 게임 시작! (여기에 게임 코드 작성)")
-            break
-        elif choice == '3':
-            break
-               
-        elif choice == '4':
-            # 4번 게임 코드 작성: 두부 게임
-            print("두부 게임 시작! (여기에 게임 코드 작성)")
-            break
-        elif choice == '5':
-            # 5번 게임 코드 작성: 초성 게임
-            print("초성 게임 시작! (여기에 게임 코드 작성)")
-            break
-        else:
-            print("⚠️ 1부터 5 사이의 숫자를 입력해주세요.")
 
-def play_369_game(current_player):
-    print("\n삼 육구~ 3 6 9~! 삼 육구~ 3 6 9~!\n")
-    print("🎉 369 게임을 시작합니다! 숫자에 3,6,9가 들어가면 '짝'이라고 말하세요.\n")
-
-    players = [name] + [friend_name for friend_name, _ in friends]
-    current_number = 1
-    current_index = 0
-
-    while True:
-        alive = [p for p in players if player_status[p]['alive']]
-        if len(alive) == 1:
-            print(f"\n🎉 {alive[0]}님이 마지막까지 살아남았습니다! 🏆")
-            return True
-
-        current_player = alive[current_index % len(alive)]
-        clap = sum(1 for digit in str(current_number) if digit in '369')
-        correct = "짝" * clap if clap > 0 else str(current_number)
-
-        if current_player == name:
-            user_input = input(f"👉 {name}!! 너 차례!! ").strip()
-            if user_input != correct:
-                print(f"❌ 오답! 정답은 '{correct}'야!")
-                mock_loser(current_player)
-                died = drink(current_player)
-                if died:
-                    return False
-        else:
-            fail_chance = 0.05
-            fail = random.random() < fail_chance
-            said = correct if not fail else ("짝" if correct != "짝" else str(current_number))
-            print(f"🤖 {current_player}: {said}")
-            if said != correct:
-                print(f"❌ 오답! 정답은 '{correct}'야!")
-                mock_loser(current_player)
-                died = drink(current_player)
-                if died:
-                    return False
-
-        current_number += 1
-        current_index += 1
-
-        alive_now = [p for p in players if player_status[p]['alive']]
-        if len(alive_now) == 1:
-            print(f"\n🎉 {alive_now[0]}님이 마지막까지 살아남았습니다! 🏆")
-            return True
 def play_game(game_number, current_player):
-    # 여기서 모든 플레이어가 함께 게임을 하도록 변경
-    return play_game_for_all(game_number)
-
-def play_game_for_all(game_number):
     alive_players = [p for p, v in player_status.items() if v['alive']]
 
     if game_number == 3:
+        # 369 게임
         current_number = 1
         current_index = 0
         while True:
@@ -293,8 +233,7 @@ def play_game_for_all(game_number):
                 if user_input != correct:
                     print(f"❌ 오답! 정답은 '{correct}'야!")
                     mock_loser(current_player)
-                    died = drink(current_player)
-                    return True
+                    return drink(current_player)
             else:
                 fail_chance = 0.05
                 fail = random.random() < fail_chance
@@ -303,11 +242,65 @@ def play_game_for_all(game_number):
                 if said != correct:
                     print(f"❌ 오답! 정답은 '{correct}'야!")
                     mock_loser(current_player)
-                    died = drink(current_player)
-                    return True
+                    return drink(current_player)
 
             current_number += 1
             current_index += 1
+
+    elif game_number == 5:
+        print("\n🛒 시장에 가면~ 게임 시작!")
+        item_pool = ['사과', '배', '수박', '감자', '고등어', '김치', '콩나물', '생선', '고추장', '호박', '꽃', '나물', '바지']
+        used_items = []
+        turn = 0
+        players = [p for p in player_status if player_status[p]['alive']]
+        random.shuffle(players)    
+
+        while True:
+            current_player = players[turn % len(players)]
+            print(f"\n🎯 {current_player} 차례입니다!")
+
+            if current_player == name:
+                print("지금까지 나온 물건:", ", ".join(used_items) if used_items else "(없음)")
+                answer = input("👉 시장에 가면 무엇을 사요? (전체 순서대로 입력, 쉼표로 구분): ").strip()
+                items = [i.strip() for i in answer.split(",")]
+            else:
+                if random.random() < 0.3:
+                    available = [item for item in item_pool if item not in used_items]
+                    if not available:
+                        print(f"{current_player}은(는) 더 이상 살 게 없어요~ 자동 탈락!")
+                        mock_loser(current_player)
+                        drink(current_player)
+                        return True
+                    new_item = random.choice(available)
+                    items = used_items + [new_item]
+                    print(f"{current_player} ▶ 시장에 가면 {'도 사고, '.join(items)}도 사고")
+                else:
+                    items = used_items.copy()
+                    random.shuffle(items)
+                    print(f"{current_player} ▶ 시장에 가면 {'도 사고, '.join(items)}도 사고")
+
+            if items[:len(used_items)] != used_items:
+                print(f"❌ {current_player} 틀렸습니다! 벌주~ 🍺")
+                mock_loser(current_player)
+                drink(current_player)
+                return True
+
+            if len(items) != len(set(items)):
+                print(f"❌ 중복된 물건을 말했어요! 벌주~ 🍺")
+                mock_loser(current_player)
+                drink(current_player)
+                return True
+
+            if len(items) <= len(used_items):
+                print(f"❌ 새로운 물건을 추가하지 않았어요! 벌주~ 🍺")
+                mock_loser(current_player)
+                drink(current_player)
+                return True
+
+            used_items = items
+            print("✅ 통과!")
+            turn += 1
+
 
     else:
         print("아직 구현되지 않은 게임입니다.")
@@ -322,12 +315,12 @@ def drink(pname):
     drunk = player_status[pname]['drunk']
     remain = max(0, limit - drunk)
 
-    print(f"\n{pname}(은)는 지금까지 {drunk}🍺! 치사량까지 {remain}")
+    print_game_status()
 
     if drunk >= limit:
         player_status[pname]['alive'] = False
         print_game_over(pname)
-        return True
+        exit()
 
     return False  # 수정: 아직 살아있으면 False 반환하여 게임 계속 진행 가능
 
