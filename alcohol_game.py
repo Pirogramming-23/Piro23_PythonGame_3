@@ -214,7 +214,38 @@ def select_game(player, first_turn=False):
 def play_game(game_number, current_player):
     alive_players = [p for p, v in player_status.items() if v['alive']]
 
-    if game_number == 3:
+    if game_number == 1:
+        print("\n💘 사랑의 총알 게임 시작! 💘")
+        directions = ['왼쪽', '오른쪽', '앞', '뒤']
+        players = [p for p in player_status if player_status[p]['alive']]
+        random.shuffle(players)
+        turn = 0
+
+        while True:
+            current_player = players[turn % len(players)]
+            expected = random.choice(directions)
+
+            print(f"\n🎯 {current_player} 차례입니다!")
+            print("사랑의 총알~💘")
+
+            if current_player == name:
+                answer = input("👉 방향을 외쳐주세요! (왼쪽/오른쪽/앞/뒤): ").strip()
+            else:
+                fail = random.random() < 0.15
+                answer = expected if not fail else random.choice(directions)
+                print(f"🤖 {current_player}: {answer}")
+
+            if answer != expected:
+                print(f"❌ 틀렸습니다! 정답은 '{expected}'! 벌주~ 🍺")
+                mock_loser(current_player)
+                drink(current_player)
+                return True
+            else:
+                print("✅ 통과!")
+                turn += 1
+
+
+    elif game_number == 3:
         # 369 게임
         current_number = 1
         current_index = 0
