@@ -18,7 +18,6 @@ def mock_loser(name):
         f"👻 {name}, 이제 유령으로 관전하시겠어요? 히히히~"
     ]
     print(random.choice(messages))
-    
 
 # ============ 1. 게임 타이틀 ============ #
 def print_game_title():
@@ -159,12 +158,8 @@ def main_game_loop():
 
         current_player = alive_players[turn_index % len(alive_players)]
 
-        if not first_turn:
-            print_game_status()
-
         game_number = select_game(current_player, first_turn=first_turn)
         
-
         print(f"\n🎮 {current_player}님이 {game_number}번 게임을 선택했습니다!\n")
 
         died = play_game(game_number, current_player)
@@ -265,7 +260,6 @@ def play_game(game_number, current_player):
             print("✅ 통과!")
             turn += 1
 
-
     elif game_number == 3:
         # 369 게임
         current_number = 1
@@ -344,7 +338,6 @@ def play_game(game_number, current_player):
             died = drink(loser)
             return died
 
-
     elif game_number == 5:
         print("\n🛒 시장에 가면~ 게임 시작!")
         item_pool = ['사과', '배', '수박', '감자', '고등어', '김치', '콩나물', '생선', '고추장', '호박', '꽃', '나물', '바지']
@@ -399,11 +392,9 @@ def play_game(game_number, current_player):
             print("✅ 통과!")
             turn += 1
 
-
     else:
         print("아직 구현되지 않은 게임입니다.")
         return False
-
 
 def drink(pname):
     amount = random.randint(1, 3)
@@ -421,7 +412,6 @@ def drink(pname):
         exit()
 
     return False  # 수정: 아직 살아있으면 False 반환하여 게임 계속 진행 가능
-
 
 def print_game_over(name):
     print(r'''
