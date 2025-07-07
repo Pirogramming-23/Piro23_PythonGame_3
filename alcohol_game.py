@@ -130,7 +130,6 @@ def print_nice_game_banner():
 ''')
 
 def main_game_loop():
-    print_nice_game_banner()
 
     show_game_list()
 
@@ -161,6 +160,7 @@ def main_game_loop():
         game_number = select_game(current_player, first_turn=first_turn)
         
         print(f"\n🎮 {current_player}님이 {game_number}번 게임을 선택했습니다!\n")
+        print_nice_game_banner()
 
         died = play_game(game_number, current_player)
         if died:
