@@ -309,6 +309,54 @@ def play_game(game_number, current_player):
             current_number += 1
             current_index += 1
 
+    elif game_number == 4:
+        #더 게임 오브 데스
+        
+            print(r'''
+                    ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                    ┃           ☠ 더 게임 오브 데스 ☠           ┃
+                    ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                    누가 누구를 노렸는지, 다 공개합니다! 😈
+                    ''')
+
+            players = [p for p in player_status if player_status[p]['alive']]
+            vote_targets = {}
+
+            print("🔎 각 플레이어가 누굴 지목할지 정합니다!")
+            for p in players:
+                available_targets = [t for t in players if t != p]
+                if not available_targets:
+                    available_targets = [p]
+                target = random.choice(available_targets)
+                vote_targets[p] = target
+                print(f"👉 {p} → {target}")
+
+            hops_input = input(f"\n{current_player}님, 숫자를 외쳐주세요 (기본 3): ").strip()
+            try:
+                hops = int(hops_input)
+            except:
+                hops = 3
+
+            print(f"\n📣 숫자 {hops}만큼 이동을 시작합니다!\n")
+
+            current = current_player
+            path = [current]
+            for _ in range(hops):
+                current = vote_targets.get(current, current)
+                path.append(current)
+
+            print("🧭 이동 경로:")
+            print(" ➡️  " + " → ".join(path))
+
+            loser = current
+            print(f"\n💀 최종 도착지: {loser}님! 벌주 당첨~ 🍻")
+
+            died = drink(loser)
+            return died
+
+
+
+
     elif game_number == 5:
         print("\n🛒 시장에 가면~ 게임 시작!")
         item_pool = ['사과', '배', '수박', '감자', '고등어', '김치', '콩나물', '생선', '고추장', '호박', '꽃', '나물', '바지']
