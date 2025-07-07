@@ -106,7 +106,7 @@ def invite_friends():
     for name, limit in selected:
         print(f"{name}은(는) 지금까지 ⚠️ 마신 잔 수: 0 / 치사량까지: {limit}잔")
         
-    friends = random.sample(list(characters.items()), num)
+    friends = selected
 
 # ============ 5. 게임 리스트 출력 ============ #
 def show_game_list():
